@@ -70,6 +70,74 @@ Audit Artifact (JSON)
 
 ---
 
-## Example Audit Artifact
+### Example Audit Artifact
 
 ```json
+{
+  "artifact_version": "1.0",
+  "generated_at_epoch": 1771101345,
+  "event_type": "pull_request",
+  "repo": "precogx-backend",
+  "actor": "alice@company.com",
+  "control_id": "CC6.1",
+  "result": "PASS",
+  "reason": "Actor is allowlisted and ACTIVE"
+}
+
+---
+
+## How Enforcement Works
+
+1. A pull request is opened.
+2. GitHub Actions triggers automatically.
+3. The compliance engine evaluates control CC6.1.
+4. If noncompliant:
+   - The job fails.
+   - The PR is blocked (if branch protection is enabled).
+   - Audit artifact is still uploaded.
+5. If compliant:
+   - Job passes.
+   - PR may proceed.
+
+### Exit Code Behavior
+
+- `0` → PASS  
+- `1` → FAIL  
+
+This enables deterministic CI enforcement.
+
+---
+
+## Capabilities Demonstrated
+
+- Policy-as-Code (YAML control definitions)
+- Deterministic control evaluation
+- Identity validation logic
+- CI/CD compliance gate
+- Automated audit artifact generation
+- Structured evidence format
+- Exit-code driven enforcement
+- GitHub Actions integration
+
+---
+
+## Differentiation from Traditional GRC Platforms
+
+Platforms such as Vanta and Drata primarily focus on evidence aggregation and audit workflow management.
+
+This project demonstrates enforcement-first compliance:
+
+- Controls are evaluated at execution time.
+- Violations are blocked automatically.
+- Evidence is generated programmatically.
+- Compliance logic is embedded in engineering workflows.
+
+This approach reduces manual effort, improves control reliability, and strengthens audit defensibility.
+
+---
+
+## Project Context
+
+This engine was designed as part of preparing an AI security platform (PrecogX.ai) for SOC 2 and GDPR readiness by embedding compliance guardrails directly into development workflows.
+
+It is intentionally lightweight, deterministic, and automation-focused.
