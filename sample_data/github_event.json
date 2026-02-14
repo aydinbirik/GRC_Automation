@@ -2,7 +2,7 @@
   "event_type": "pull_request",
   "repo": "precogx-backend",
   "repo_sensitivity": "high",
-  "actor": "alice@company.com",
+  "actor": "bob@company.com",
   "approvals": 1,
   "branch_protection": true,
   "pr_title": "Fix telemetry pipeline",
