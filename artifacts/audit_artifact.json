@@ -1,0 +1,10 @@
+{
+  "artifact_version": "1.0",
+  "generated_at_epoch": 1771101345,
+  "event_type": "pull_request",
+  "repo": "precogx-backend",
+  "actor": "alice@company.com",
+  "control_id": "CC6.1",
+  "result": "PASS",
+  "reason": "Actor is allowlisted and ACTIVE"
+}

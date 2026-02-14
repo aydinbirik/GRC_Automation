@@ -1,0 +1,7 @@
+{
+    "users": [
+      { "email": "alice@company.com", "status": "ACTIVE", "role": "engineer" },
+      { "email": "bob@company.com", "status": "SUSPENDED", "role": "engineer" },
+      { "email": "aydin@company.com", "status": "ACTIVE", "role": "platform-eng" }
+    ]
+  }

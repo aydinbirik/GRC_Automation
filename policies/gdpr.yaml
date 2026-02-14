@@ -1,0 +1,35 @@
+framework: "GDPR"
+version: "mvp-0.1"
+controls:
+  - control_id: "ARTICLE_5"
+    name: "Data minimization - prevent unnecessary personal data in change text"
+    description: "Commit/PR text must not contain personal data (PII)."
+    trigger: "pull_request"
+    severity: "high"
+    checks:
+      - id: "pii_scan_commit_and_pr_text"
+        source: "scanner"
+        field: "text"
+        operator: "pii_risk_lte"
+        value: "medium"
+        pii_types:
+          - "EMAIL"
+          - "PHONE"
+          - "CREDIT_CARD"
+
+  - control_id: "ARTICLE_32"
+    name: "Security of processing - artifacts must be generated and protected"
+    description: "Compliance artifacts must be produced for traceability and stored securely."
+    trigger: "pull_request"
+    severity: "medium"
+    checks:
+      - id: "artifact_generated"
+        source: "engine"
+        field: "artifact"
+        operator: "exists"
+        value: true
+      - id: "artifact_storage_encrypted_flag"
+        source: "engine"
+        field: "artifact_storage_encrypted"
+        operator: "equals"
+        value: true

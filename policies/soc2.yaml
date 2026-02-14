@@ -1,0 +1,56 @@
+framework: "SOC2"
+version: "mvp-0.1"
+controls:
+  - control_id: "CC6.1"
+    name: "Logical access - actor must be authorized and active"
+    description: "Only authorized, currently active users may make changes."
+    trigger: "pull_request"
+    severity: "high"
+    checks:
+      - id: "actor_in_allowlist"
+        source: "policy"
+        field: "actor"
+        operator: "in"
+        value_from: "allowlists.repo_devs"
+      - id: "actor_is_active"
+        source: "okta"
+        field: "status"
+        operator: "equals"
+        value: "ACTIVE"
+
+  - control_id: "CC6.3"
+    name: "Least privilege - role must match repo sensitivity"
+    description: "Changes to sensitive repos require elevated roles."
+    trigger: "pull_request"
+    severity: "high"
+    checks:
+      - id: "repo_sensitivity_requires_role"
+        source: "policy"
+        field: "repo_sensitivity"
+        operator: "requires_role"
+        mapping:
+          low: ["engineer", "admin", "platform-eng"]
+          high: ["admin", "platform-eng"]
+
+  - control_id: "CC7.2"
+    name: "Change management - approvals and branch protection required"
+    description: "Pull requests must have required approvals and branch protections."
+    trigger: "pull_request"
+    severity: "medium"
+    checks:
+      - id: "min_approvals"
+        source: "github"
+        field: "approvals"
+        operator: "gte"
+        value: 1
+      - id: "branch_protection_enabled"
+        source: "github"
+        field: "branch_protection"
+        operator: "equals"
+        value: true
+
+allowlists:
+  repo_devs:
+    - "alice@company.com"
+    - "bob@company.com"
+    - "aydin@company.com"
