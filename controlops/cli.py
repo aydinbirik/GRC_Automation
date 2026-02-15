@@ -1,5 +1,6 @@
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -14,10 +15,26 @@ from controlops.evaluator import (
 
 def main() -> None:
     parser = argparse.ArgumentParser(prog="controlops")
-    parser.add_argument("--github", default=str(BASE_DIR / "sample_data" / "github_event.json"))
-    parser.add_argument("--okta", default=str(BASE_DIR / "sample_data" / "okta_users.json"))
-    parser.add_argument("--soc2", default=str(BASE_DIR / "policies" / "soc2.yaml"))
-    parser.add_argument("--out", default=str(BASE_DIR / "artifacts" / "audit_artifact.json"))
+    parser.add_argument(
+        "--github",
+        default=str(BASE_DIR / "sample_data" / "github_event.json"),
+        help="Path to GitHub event JSON (or mock).",
+    )
+    parser.add_argument(
+        "--okta",
+        default=str(BASE_DIR / "sample_data" / "okta_users.json"),
+        help="Path to Okta users JSON (or mock).",
+    )
+    parser.add_argument(
+        "--soc2",
+        default=str(BASE_DIR / "policies" / "soc2.yaml"),
+        help="Path to SOC2 policy YAML.",
+    )
+    parser.add_argument(
+        "--out",
+        default=str(BASE_DIR / "artifacts" / "audit_artifact.json"),
+        help="Where to write the generated audit artifact JSON.",
+    )
     args = parser.parse_args()
 
     print("[controlops] Using inputs:")
@@ -28,15 +45,21 @@ def main() -> None:
 
     soc2_policy = load_yaml(args.soc2)
     github_event = load_json(args.github)
-    okta_data = load_json(args.okta)
 
-    print(f"[controlops] Loaded GitHub actor: {github_event.get('actor')}")
+    # If running in GitHub Actions, override actor with the real PR actor (username)
+    gha_actor = os.getenv("GITHUB_ACTOR")
+    if gha_actor:
+        github_event["actor"] = gha_actor
+
+    print(f"[controlops] Effective actor: {github_event.get('actor')}")
+
+    okta_data = load_json(args.okta)
 
     decision = evaluate_cc6_1(soc2_policy, github_event, okta_data)
     artifact = generate_audit_artifact(decision, github_event)
 
     out_path = Path(args.out)
-    out_path.parent.mkdir(exist_ok=True)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(json.dumps(artifact, indent=2), encoding="utf-8")
 
     print(json.dumps(decision, indent=2))

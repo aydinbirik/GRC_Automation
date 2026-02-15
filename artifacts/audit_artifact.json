@@ -1,10 +1,10 @@
 {
   "artifact_version": "1.0",
-  "generated_at_epoch": 1771101345,
+  "generated_at_epoch": 1771114749,
   "event_type": "pull_request",
   "repo": "precogx-backend",
-  "actor": "alice@company.com",
+  "actor": "bob",
   "control_id": "CC6.1",
-  "result": "PASS",
-  "reason": "Actor is allowlisted and ACTIVE"
+  "result": "FAIL",
+  "reason": "Actor 'bob' is not ACTIVE in Okta (status=SUSPENDED)"
 }

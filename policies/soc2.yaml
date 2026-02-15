@@ -51,6 +51,6 @@ controls:
 
 allowlists:
   repo_devs:
-    - "alice@company.com"
-    - "bob@company.com"
-    - "aydin@company.com"
+    - "alice"
+    - "bob"
+    - "aydinbirik"
